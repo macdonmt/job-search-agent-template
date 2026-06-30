@@ -1,0 +1,19 @@
+{
+  "linkedin": {
+    "enabled": false,
+    "postDays": ["Tuesday", "Thursday"],
+    "topics": [
+      "What I've learned about job searching",
+      "How I think about program management at scale"
+    ]
+  },
+  "certs": {
+    "enabled": false,
+    "active": "PMP",
+    "studyTopics": [
+      "Scope management and WBS",
+      "Risk register and probability/impact matrix",
+      "Earned value analysis"
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "companies": [
+    { "name": "Acme Corp", "tier": 1 },
+    { "name": "Example Inc", "tier": 2 }
+  ],
+  "keywords": [
+    "program manager",
+    "senior program manager",
+    "technical program manager",
+    "tpm",
+    "director",
+    "delivery manager",
+    "agile"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "name": "job-search-agent",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "transform": "node scripts/transform-resume.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.100.1",
+    "@google-cloud/local-auth": "^3.0.1",
+    "@slack/webhook": "^7.0.9",
+    "@vercel/functions": "^3.6.2",
+    "googleapis": "^144.0.0"
+  }
+}

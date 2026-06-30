@@ -1,0 +1,10 @@
+node_modules/
+credentials/
+.env
+.env.local
+linkedin-data/
+*.zip
+
+.vercel
+.env*.local
+.env*
