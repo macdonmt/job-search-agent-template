@@ -19,6 +19,7 @@ At the start of every session, check whether this is a **fresh install** or an *
 
 **Signs this is a fresh install (setup wizard mode):**
 - `config/career-facts.js` still contains placeholder text like `[COMPANY NAME]`
+- `lib/tailor.js` still contains placeholder text like `[Resume bullet — exact text from your base resume...]`
 - `config/contacts.json` is an empty array `[]`
 - `.env.local` does not exist
 - `node_modules/` does not exist
@@ -121,6 +122,24 @@ Help the user fill in each config file interactively. Ask them the questions and
 Ask questions, fill in facts as they answer. Cover: company name, title, dates, team size, budget, key outcomes with metrics, technologies used, notable initiatives.
 
 **`lib/resume.js`** — ask what their full name is (for the resume filename). Note that the actual base resume Doc ID and tailored folder ID come from Google Drive and will be set as env vars in the next step.
+
+### Step 5b — Populate base resume content in tailor.js
+
+`lib/tailor.js` contains the actual resume text the AI edits during tailoring — the profile paragraph, areas of expertise, and bullet points per role. The tailoring pipeline does find/replace against this text, so it must match what's in their Google Drive resume exactly.
+
+Tell the user:
+> "Now I need the actual text from your resume — your professional summary, skill areas, and bullet points for each role. You can paste sections directly and I'll format them, or just walk me through each role and I'll draft the bullets for you to review."
+
+Ask and fill in:
+- **Profile/summary** — their current professional summary or top-of-resume statement
+- **Areas of expertise** — 4–6 skill or domain areas (usually a keyword list near the top of the resume)
+- **Bullets per role** — exact bullet text for each role, most recent first. Prompt: "What did you accomplish at [Company]? Give me the highlights and I'll turn them into resume bullets."
+
+Write the collected content into `PROFILES['default']` and `RESUME_CONTENT['default']` in `lib/tailor.js`.
+
+If they maintain more than one resume version targeting different role types, ask: "Do you have more than one resume version — for example, one framed toward TPM roles and one toward general PM?" If yes, add additional keys (e.g. `'tpm'`) following the same shape as `'default'`.
+
+Before moving on, confirm the file has no remaining placeholder brackets like `[...]`.
 
 ### Step 6 — Generate a CRON_SECRET
 
