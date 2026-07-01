@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Job Search Agent — Setup Guide</title>
+  <style>
+    :root {
+      --bg: #111111;
+      --surface: #1a1a1a;
+      --card: #202020;
+      --border: #2a2a2a;
+      --accent: #5b8dd9;
+      --text: #d4d4d4;
+      --muted: #6a6a6a;
+      --code-bg: #161616;
+      --code-text: #c9c9c9;
+      --font-body: 'Segoe UI', system-ui, sans-serif;
+      --font-mono: 'Cascadia Code', 'Consolas', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      line-height: 1.75;
+      padding: 0 1rem 4rem;
+    }
+
+    header {
+      background: var(--surface);
+      padding: 3rem 2rem 2.5rem;
+      text-align: center;
+      margin-bottom: 2.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    header h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem; color: #e8e8e8; }
+    header p { color: var(--muted); font-size: 1.05rem; }
+
+    .badge {
+      display: inline-block;
+      background: var(--card);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+    }
+
+    main { max-width: 900px; margin: 0 auto; }
+
+    .toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 2.5rem;
+    }
+    .toc h2 { font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 0.8rem; }
+    .toc ol { padding-left: 1.4rem; }
+    .toc li { margin: 0.35rem 0; }
+    .toc a { color: var(--accent); text-decoration: none; }
+    .toc a:hover { text-decoration: underline; }
+
+    section {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      border: 1px solid var(--border);
+    }
+
+    section h2 {
+      font-size: 1.45rem;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.9rem;
+      color: #e8e8e8;
+    }
+
+    .step-num {
+      background: var(--accent);
+      color: #fff;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    section h3 { font-size: 1.05rem; color: #c0c0c0; font-weight: 600; margin: 1.6rem 0 0.6rem; }
+    section h4 { font-size: 0.95rem; color: var(--muted); font-weight: 600; margin: 1rem 0 0.4rem; }
+
+    section p { margin-bottom: 0.8rem; }
+    section ul, section ol { padding-left: 1.5rem; margin-bottom: 0.8rem; }
+    section li { margin: 0.45rem 0; }
+
+    code {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.1em 0.4em;
+      font-family: var(--font-mono);
+      font-size: 0.88em;
+      color: var(--code-text);
+    }
+
+    kbd {
+      background: var(--card);
+      border: 1px solid #444;
+      border-bottom-width: 2px;
+      border-radius: 4px;
+      padding: 0.1em 0.45em;
+      font-family: var(--font-body);
+      font-size: 0.85em;
+      color: #e0e0e0;
+    }
+
+    .cmd {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      margin: 0.8rem 0;
+      font-family: var(--font-mono);
+      font-size: 0.92rem;
+      color: var(--code-text);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      overflow-x: auto;
+    }
+    .cmd span { flex: 1; white-space: pre; }
+
+    .copy-btn {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.75rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 5px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.15s, color 0.15s;
+    }
+    .copy-btn:hover { background: #2a2a2a; color: #e0e0e0; }
+    .copy-btn.copied { color: #7ec89a; border-color: #7ec89a; }
+
+    .callout {
+      border-radius: 8px;
+      padding: 0.9rem 1.1rem;
+      margin: 1rem 0;
+      font-size: 0.95rem;
+      border-left: 3px solid;
+      display: flex;
+      gap: 0.8rem;
+      align-items: flex-start;
+      background: var(--card);
+    }
+    .callout-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 0.1rem; }
+    .callout.tip    { border-color: var(--accent); }
+    .callout.warning { border-color: #c9962a; }
+    .callout.success { border-color: #5a9e72; }
+    .callout.danger  { border-color: #b05555; }
+
+    .expected-output {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-left: 3px solid #5a9e72;
+      border-radius: 8px;
+      padding: 0.8rem 1rem;
+      margin: 0.6rem 0;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--code-text);
+    }
+    .expected-output .label {
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.4rem;
+      display: block;
+    }
+
+    .env-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.9rem;
+    }
+    .env-table th {
+      background: var(--card);
+      color: var(--muted);
+      text-align: left;
+      padding: 0.6rem 0.9rem;
+      border: 1px solid var(--border);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .env-table td {
+      padding: 0.6rem 0.9rem;
+      border: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .env-table td:first-child {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: #a8c4e8;
+      white-space: nowrap;
+    }
+    .env-table td:last-child { color: var(--muted); font-size: 0.88rem; }
+    .env-table tr:hover td { background: var(--card); }
+
+    .checklist { list-style: none; padding-left: 0; }
+    .checklist li { display: flex; align-items: flex-start; gap: 0.6rem; margin: 0.5rem 0; }
+    .checklist li::before { content: '☐'; color: var(--muted); font-size: 1.1rem; flex-shrink: 0; }
+
+    .path-example {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.5rem 0.9rem;
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      color: var(--code-text);
+      margin: 0.4rem 0;
+      overflow-x: auto;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 1.5rem 0;
+    }
+
+    .overview-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.8rem 2rem;
+      margin-bottom: 2.5rem;
+    }
+    .overview-box h2 {
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+      margin-bottom: 1.2rem;
+    }
+    .overview-steps {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .overview-steps li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.9rem;
+      color: var(--text);
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    .ov-num {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      min-width: 1.7rem;
+      height: 1.7rem;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+    .overview-steps li strong { color: #e8e8e8; }
+    .overview-steps li span { color: var(--muted); font-size: 0.9rem; display: block; margin-top: 0.1rem; }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+      margin: 1rem 0;
+    }
+    .feature-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.9rem 1rem;
+    }
+    .feature-card h4 { font-size: 0.88rem; color: #b8b8b8; margin-bottom: 0.3rem; }
+    .feature-card p { font-size: 0.85rem; color: var(--muted); margin: 0; }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    a { color: var(--accent); }
+
+    @media (max-width: 620px) {
+      .feature-grid { grid-template-columns: 1fr; }
+      header h1 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="badge">Self-Hosted &mdash; Vercel + Slack + Google</div>
+  <h1>AI Job Search Agent — Setup Guide</h1>
+  <p>Daily job scanning, scoring, and resume tailoring — running on your own accounts</p>
+</header>
+
+<main>
+
+  <!-- OVERVIEW -->
+  <div class="overview-box">
+    <h2>The Big Picture — What You're About to Build</h2>
+    <ul class="overview-steps">
+      <li>
+        <span class="ov-num">1</span>
+        <div><strong>Fork the template repo and install dependencies.</strong> Clone the project to your machine and install the Node.js packages it needs to run.<span>Section: Step 1</span></div>
+      </li>
+      <li>
+        <span class="ov-num">2</span>
+        <div><strong>Set up Google Cloud.</strong> Enable the Gmail, Sheets, Drive, and Docs APIs, then run one script to authorize the app with your Google account. This is the most involved part — follow each sub-step carefully.<span>Section: Step 2</span></div>
+      </li>
+      <li>
+        <span class="ov-num">3</span>
+        <div><strong>Create a Slack app.</strong> Set up a free Slack workspace (or use an existing one), create a custom app, and collect the webhook URL, bot token, and signing secret it needs.<span>Section: Step 3</span></div>
+      </li>
+      <li>
+        <span class="ov-num">4</span>
+        <div><strong>Initialize your Google Sheet and set up LinkedIn alerts.</strong> Run one script to create the tracker spreadsheet, then configure LinkedIn to email you job alerts in the format the agent expects.<span>Section: Step 4</span></div>
+      </li>
+      <li>
+        <span class="ov-num">5</span>
+        <div><strong>Configure your profile.</strong> Tell the agent which companies and job titles you're targeting, add any confirmed referrals, and update the career facts file for resume tailoring.<span>Section: Step 5</span></div>
+      </li>
+      <li>
+        <span class="ov-num">6</span>
+        <div><strong>Deploy to Vercel and add your environment variables.</strong> Connect the repo to Vercel, paste in all the keys and tokens you collected, and deploy. The agent runs automatically from then on.<span>Section: Step 6</span></div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc">
+    <h2>Table of Contents</h2>
+    <ol>
+      <li><a href="#what-it-does">What this agent does</a></li>
+      <li><a href="#prereqs">Prerequisites — accounts and tools you need first</a></li>
+      <li><a href="#step1">Step 1 &mdash; Fork and install</a></li>
+      <li><a href="#step2">Step 2 &mdash; Set up Google Cloud</a></li>
+      <li><a href="#step3">Step 3 &mdash; Set up Slack</a></li>
+      <li><a href="#step4">Step 4 &mdash; Initialize the Google Sheet and Gmail alerts</a></li>
+      <li><a href="#step5">Step 5 &mdash; Configure your profile</a></li>
+      <li><a href="#step6">Step 6 &mdash; Deploy to Vercel</a></li>
+      <li><a href="#step7">Step 7 &mdash; Run your first job scan</a></li>
+      <li><a href="#step8">Step 8 &mdash; Resume tailoring (advanced)</a></li>
+      <li><a href="#daily">Daily workflow</a></li>
+      <li><a href="#troubleshooting">Troubleshooting</a></li>
+    </ol>
+  </div>
+
+  <!-- WHAT IT DOES -->
+  <section id="what-it-does">
+    <h2><span class="step-num">?</span> What this agent does</h2>
+    <p>This is a self-hosted AI job search assistant that runs entirely on your own accounts — no SaaS subscription, no shared data. Once deployed, it runs on autopilot every morning.</p>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4>Daily job scanning</h4>
+        <p>Reads your LinkedIn email alerts, parses every job with Claude AI, and deduplicates against your history.</p>
+      </div>
+      <div class="feature-card">
+        <h4>Smart scoring</h4>
+        <p>Each job gets scored against your target companies, keywords, location preferences, and confirmed referrals.</p>
+      </div>
+      <div class="feature-card">
+        <h4>Slack alerts</h4>
+        <p>High-priority "Act Now" jobs are posted to Slack immediately, with direct links and connection counts.</p>
+      </div>
+      <div class="feature-card">
+        <h4>Morning digest</h4>
+        <p>A 7:30am summary: AI briefing, pipeline health, new roles, resume queue, and follow-up reminders.</p>
+      </div>
+      <div class="feature-card">
+        <h4>Google Sheet tracker</h4>
+        <p>All jobs land in a spreadsheet with status tracking, scoring details, and resume links.</p>
+      </div>
+      <div class="feature-card">
+        <h4>AI resume tailoring</h4>
+        <p>Two-stage pipeline: gap analysis then targeted edits, producing a tailored Google Doc per application.</p>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <span class="callout-icon">&#128176;</span>
+      <div><strong>Cost:</strong> The only required paid service is an Anthropic API key. At typical job search volumes (50&ndash;200 jobs/day parsed), expect roughly <strong>$5&ndash;15/month</strong> in API usage. Google, Slack, and Vercel Hobby are all free for this use case.</div>
+    </div>
+  </section>
+
+  <!-- PREREQS -->
+  <section id="prereqs">
+    <h2><span class="step-num">&#10003;</span> Prerequisites</h2>
+    <p>Have all of these before starting. Setup goes much faster when everything is ready.</p>
+
+    <h3>Accounts to create (all free unless noted)</h3>
+    <ul class="checklist">
+      <li><strong>GitHub account</strong> — to fork the repo. Free at <a href="https://github.com" target="_blank">github.com</a></li>
+      <li><strong>Google account</strong> — for Gmail, Google Sheets, Google Drive. A personal Gmail account works fine.</li>
+      <li><strong>Google Cloud account</strong> — to create API credentials. Free at <a href="https://console.cloud.google.com" target="_blank">console.cloud.google.com</a> (requires a Google account)</li>
+      <li><strong>Slack workspace</strong> — to receive alerts. Create a free personal one at <a href="https://slack.com" target="_blank">slack.com</a> — you don't need a team or company</li>
+      <li><strong>Vercel account</strong> — to host the agent. Free Hobby tier at <a href="https://vercel.com" target="_blank">vercel.com</a> (connect with your GitHub account)</li>
+      <li><strong>Anthropic account</strong> — for the AI features. Create at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> and add $10&ndash;20 in API credits to start</li>
+    </ul>
+
+    <h3>Software to install on your computer</h3>
+    <ul class="checklist">
+      <li><strong>Node.js LTS</strong> — download at <a href="https://nodejs.org" target="_blank">nodejs.org</a>. After installing, verify with: <code>node --version</code></li>
+      <li><strong>Git</strong> — download at <a href="https://git-scm.com" target="_blank">git-scm.com</a>. After installing, verify with: <code>git --version</code></li>
+    </ul>
+
+    <h3>LinkedIn setup</h3>
+    <ul class="checklist">
+      <li>A LinkedIn account with job alert emails sent to your Google account's Gmail address</li>
+    </ul>
+
+    <div class="callout warning">
+      <span class="callout-icon">&#9888;</span>
+      <div>The Google Cloud setup (Step 2) is the most involved part of this guide. Set aside 30&ndash;45 minutes for it. All other steps are 5&ndash;15 minutes each.</div>
+    </div>
+  </section>
+
+  <!-- STEP 1 -->
+  <section id="step1">
+    <h2><span class="step-num">1</span> Fork and install</h2>
+
+    <h3>1a. Fork the template repo</h3>
+    <ol>
+      <li>Go to the template repo on GitHub (link in README)</li>
+      <li>Click <strong>Fork</strong> in the top-right corner</li>
+      <li>Name it whatever you like (e.g. <code>job-search-agent</code>) and click <strong>Create fork</strong></li>
+    </ol>
+
+    <h3>1b. Clone your fork locally</h3>
+    <p>Open a Terminal and run (replace <code>yourusername</code> with your GitHub username):</p>
+    <div class="cmd"><span>git clone https://github.com/yourusername/job-search-agent.git</span><button class="copy-btn" onclick="copyCmd(this, 'git clone https://github.com/yourusername/job-search-agent.git')">Copy</button></div>
+    <div class="cmd"><span>cd job-search-agent</span><button class="copy-btn" onclick="copyCmd(this, 'cd job-search-agent')">Copy</button></div>
+
+    <h3>1c. Install dependencies</h3>
+    <div class="cmd"><span>npm install</span><button class="copy-btn" onclick="copyCmd(this, 'npm install')">Copy</button></div>
+    <p>This will install all the required packages. It may take a minute. When the prompt returns, you're ready for Step 2.</p>
+
+    <h3>1d. Create the credentials folder</h3>
+    <p>The auth script expects a <code>credentials/</code> folder to exist (it's gitignored — never committed):</p>
+    <div class="cmd"><span>mkdir credentials</span><button class="copy-btn" onclick="copyCmd(this, 'mkdir credentials')">Copy</button></div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section id="step2">
+    <h2><span class="step-num">2</span> Set up Google Cloud</h2>
+    <p>This step authorizes the agent to read your Gmail and read/write to Google Sheets and Drive. It involves creating a Google Cloud project, enabling four APIs, creating an OAuth credential, and running an auth script.</p>
+
+    <h3>2a. Create a Google Cloud project</h3>
+    <ol>
+      <li>Go to <a href="https://console.cloud.google.com" target="_blank">console.cloud.google.com</a> and sign in with your Google account</li>
+      <li>Click the project dropdown at the top of the page (it may say "Select a project" or show an existing project name)</li>
+      <li>Click <strong>New Project</strong></li>
+      <li>Name it something like <code>job-search-agent</code> and click <strong>Create</strong></li>
+      <li>Wait a moment, then make sure your new project is selected in the dropdown at the top</li>
+    </ol>
+
+    <h3>2b. Enable the required APIs</h3>
+    <p>You need to enable four Google APIs. For each one, follow these steps:</p>
+    <ol>
+      <li>In the left sidebar, click <strong>APIs &amp; Services</strong> &rarr; <strong>Library</strong></li>
+      <li>Search for the API name, click on it, then click <strong>Enable</strong></li>
+    </ol>
+    <p>Enable these four APIs:</p>
+    <ul>
+      <li><strong>Gmail API</strong></li>
+      <li><strong>Google Sheets API</strong></li>
+      <li><strong>Google Drive API</strong></li>
+      <li><strong>Google Docs API</strong></li>
+    </ul>
+
+    <div class="callout tip">
+      <span class="callout-icon">&#128161;</span>
+      <div>After enabling each API, use the browser back button to return to the Library page to search for the next one. You can also check <strong>APIs &amp; Services &rarr; Enabled APIs &amp; services</strong> to confirm all four are listed.</div>
+    </div>
+
+    <h3>2c. Create an OAuth 2.0 credential</h3>
+    <ol>
+      <li>In the left sidebar, click <strong>APIs &amp; Services</strong> &rarr; <strong>Credentials</strong></li>
+      <li>Click <strong>+ Create Credentials</strong> at the top, then choose <strong>OAuth client ID</strong></li>
+      <li>If prompted to configure a consent screen first, click <strong>Configure Consent Screen</strong>:
+        <ul>
+          <li>Choose <strong>External</strong> and click <strong>Create</strong></li>
+          <li>Fill in just the required fields: App name (anything), User support email (your Gmail), Developer contact email (your Gmail)</li>
+          <li>Click <strong>Save and Continue</strong> through all the screens until done</li>
+          <li>Go back to <strong>Credentials &rarr; + Create Credentials &rarr; OAuth client ID</strong></li>
+        </ul>
+      </li>
+      <li>For <strong>Application type</strong>, choose <strong>Desktop app</strong></li>
+      <li>Name it anything (e.g. <code>job-search-agent-local</code>) and click <strong>Create</strong></li>
+      <li>A dialog will appear — click <strong>Download JSON</strong></li>
+      <li>Rename the downloaded file to <code>oauth-client.json</code> and move it into your project's <code>credentials/</code> folder</li>
+    </ol>
+
+    <div class="callout warning">
+      <span class="callout-icon">&#9888;</span>
+      <div>You also need to add yourself as a test user. Go to <strong>APIs &amp; Services &rarr; OAuth consent screen &rarr; Test users</strong> and add your Gmail address. Without this, the authorization in the next step will fail.</div>
+    </div>
+
+    <h3>2d. Run the authorization script</h3>
+    <p>This script opens a browser window so you can authorize the app with your Google account. Run it from your project folder:</p>
+    <div class="cmd"><span>node scripts/auth.js</span><button class="copy-btn" onclick="copyCmd(this, 'node scripts/auth.js')">Copy</button></div>
+    <ol>
+      <li>A browser window will open asking you to sign in with Google</li>
+      <li>Sign in with the same Google account whose Gmail you want to monitor</li>
+      <li>You may see a warning that says "Google hasn't verified this app" — click <strong>Advanced</strong> then <strong>Go to [app name] (unsafe)</strong>. This is expected for personal apps in test mode.</li>
+      <li>Check all the permission boxes and click <strong>Continue</strong></li>
+      <li>The browser will say "The authentication flow has completed" — go back to your Terminal</li>
+    </ol>
+
+    <p>The Terminal will print something like this:</p>
+    <div class="expected-output">
+      <span class="label">&#10003; What you should see:</span>
+      Authorization complete. Token saved to credentials/token.json
+
+      --- Copy this value into Vercel as GOOGLE_REFRESH_TOKEN ---
+
+      1//0gXXXXXXXXXXXXXX...
+    </div>
+
+    <p><strong>Copy the refresh token</strong> and save it somewhere safe (a text file, password manager, etc.) — you'll need it in Step 6 when setting up Vercel environment variables.</p>
+
+    <p>Also note your <code>GOOGLE_CLIENT_ID</code> and <code>GOOGLE_CLIENT_SECRET</code> from the <code>credentials/oauth-client.json</code> file you downloaded — open it and look for the <code>"client_id"</code> and <code>"client_secret"</code> fields inside <code>"installed"</code>.</p>
+
+    <div class="callout success">
+      <span class="callout-icon">&#10003;</span>
+      <div>After this step you have everything you need from Google Cloud: Client ID, Client Secret, and Refresh Token. Keep them safe — they're the keys to your Gmail and Sheets access.</div>
+    </div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section id="step3">
+    <h2><span class="step-num">3</span> Set up Slack</h2>
+    <p>The agent posts job alerts and your morning digest to a Slack channel. You need a Slack workspace and a custom app with the right permissions.</p>
+
+    <h3>3a. Create a Slack workspace (if you don't have one)</h3>
+    <ol>
+      <li>Go to <a href="https://slack.com/get-started" target="_blank">slack.com/get-started</a> and click <strong>Create a Workspace</strong></li>
+      <li>Sign in with your email and follow the prompts. When asked for a company name, use anything — this is a personal workspace.</li>
+      <li>Create a channel called <code>#job-alerts</code> (or anything you like)</li>
+    </ol>
+
+    <h3>3b. Create a Slack app</h3>
+    <ol>
+      <li>Go to <a href="https://api.slack.com/apps" target="_blank">api.slack.com/apps</a> and click <strong>Create New App</strong></li>
+      <li>Choose <strong>From scratch</strong></li>
+      <li>Name the app (e.g. <code>Job Scout</code>) and select your workspace, then click <strong>Create App</strong></li>
+    </ol>
+
+    <h3>3c. Enable Incoming Webhooks</h3>
+    <ol>
+      <li>In the left sidebar of your app settings, click <strong>Incoming Webhooks</strong></li>
+      <li>Toggle <strong>Activate Incoming Webhooks</strong> to On</li>
+      <li>Click <strong>Add New Webhook to Workspace</strong> at the bottom</li>
+      <li>Choose the channel you want alerts in (e.g. <code>#job-alerts</code>) and click <strong>Allow</strong></li>
+      <li>A webhook URL starting with <code>https://hooks.slack.com/services/...</code> will appear. <strong>Copy and save it</strong> — this is your <code>SLACK_WEBHOOK_URL</code>.</li>
+    </ol>
+
+    <h3>3d. Add bot scopes</h3>
+    <ol>
+      <li>In the left sidebar, click <strong>OAuth &amp; Permissions</strong></li>
+      <li>Scroll to <strong>Bot Token Scopes</strong> and click <strong>Add an OAuth Scope</strong></li>
+      <li>Add these scopes one at a time: <code>chat:write</code>, <code>channels:read</code>, <code>files:upload</code>, <code>views:open</code></li>
+    </ol>
+
+    <h3>3e. Install the app and get your bot token</h3>
+    <ol>
+      <li>Scroll to the top of the <strong>OAuth &amp; Permissions</strong> page and click <strong>Install to Workspace</strong></li>
+      <li>Click <strong>Allow</strong></li>
+      <li>A <strong>Bot User OAuth Token</strong> starting with <code>xoxb-</code> will appear. <strong>Copy and save it</strong> — this is your <code>SLACK_BOT_TOKEN</code>.</li>
+    </ol>
+
+    <h3>3f. Get your Signing Secret</h3>
+    <ol>
+      <li>In the left sidebar, click <strong>Basic Information</strong></li>
+      <li>Scroll to <strong>App Credentials</strong></li>
+      <li>Click <strong>Show</strong> next to <strong>Signing Secret</strong>. <strong>Copy and save it</strong> — this is your <code>SLACK_SIGNING_SECRET</code>.</li>
+    </ol>
+
+    <div class="callout success">
+      <span class="callout-icon">&#10003;</span>
+      <div>After this step you have three Slack values saved: <code>SLACK_WEBHOOK_URL</code>, <code>SLACK_BOT_TOKEN</code>, and <code>SLACK_SIGNING_SECRET</code>.</div>
+    </div>
+  </section>
+
+  <!-- STEP 4 -->
+  <section id="step4">
+    <h2><span class="step-num">4</span> Initialize the Google Sheet and Gmail alerts</h2>
+
+    <h3>4a. Create your job tracker spreadsheet</h3>
+    <p>Run this script from your project folder. It creates the Google Sheet, sets up all the column headers, and prints the Sheet ID you'll need later.</p>
+    <div class="cmd"><span>node scripts/init-sheet.js</span><button class="copy-btn" onclick="copyCmd(this, 'node scripts/init-sheet.js')">Copy</button></div>
+    <div class="expected-output">
+      <span class="label">&#10003; What you should see:</span>
+      Sheet created: Job Search Tracker
+      Sheet ID: 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms
+      Add GOOGLE_SHEET_ID=1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms to your Vercel env vars.
+    </div>
+    <p><strong>Copy the Sheet ID</strong> (the long string after <code>Sheet ID:</code>) and save it — this is your <code>GOOGLE_SHEET_ID</code>.</p>
+
+    <div class="callout tip">
+      <span class="callout-icon">&#128161;</span>
+      <div>Open <a href="https://sheets.google.com" target="_blank">Google Sheets</a> to confirm the spreadsheet was created. It should appear in your recent files and contain the column headers on the first row.</div>
+    </div>
+
+    <h3>4b. Set up LinkedIn job alert emails</h3>
+    <p>The agent reads your Gmail inbox for LinkedIn job alert emails. You need to configure LinkedIn to send those alerts to the Gmail address you authorized in Step 2.</p>
+
+    <h4>Create job alerts on LinkedIn</h4>
+    <ol>
+      <li>Go to <a href="https://linkedin.com/jobs" target="_blank">linkedin.com/jobs</a></li>
+      <li>Search for the types of roles you're targeting (e.g. "Director Program Management Chicago")</li>
+      <li>At the top of the results, toggle on <strong>Job alert</strong> — LinkedIn will send you an email whenever new matching jobs are posted</li>
+      <li>Repeat for different search variations (title variations, remote options, etc.)</li>
+    </ol>
+
+    <h4>Make sure alerts go to your Gmail</h4>
+    <ol>
+      <li>Go to your LinkedIn <strong>Settings &amp; Privacy &rarr; Communications &rarr; Email notifications</strong></li>
+      <li>Confirm that your primary email is the Gmail address you authorized in Step 2</li>
+      <li>Under job notification preferences, make sure job alerts are enabled and set to <strong>Daily Digest</strong> or <strong>As they happen</strong></li>
+    </ol>
+
+    <div class="callout tip">
+      <span class="callout-icon">&#128161;</span>
+      <div>The agent looks for emails with subject lines matching LinkedIn's standard job alert format. You don't need to do anything special — just make sure the alerts are going to the right Gmail account and that you're getting them (check your inbox after setting one up).</div>
+    </div>
+
+    <div class="callout warning">
+      <span class="callout-icon">&#9888;</span>
+      <div>Set up at least 3&ndash;5 different LinkedIn job alerts for different role title variations. The agent is only as good as the alerts it receives. Common variations to cover: your primary title, related titles one level up/down, and remote variants.</div>
+    </div>
+  </section>
+
+  <!-- STEP 5 -->
+  <section id="step5">
+    <h2><span class="step-num">5</span> Configure your profile</h2>
+    <p>These JSON files and one JavaScript file tell the agent who you are — which roles to prioritize, which companies you're targeting, and what your career history looks like for resume tailoring.</p>
+
+    <h3>5a. Edit <code>config/companies.json</code></h3>
+    <p>This file boosts your score for roles at companies you specifically want to work at. Open it in any text editor and replace the examples with your actual targets:</p>
+    <div class="path-example">{
+  "companies": [
+    { "name": "Stripe", "tier": 1 },
+    { "name": "Salesforce", "tier": 1 },
+    { "name": "Accenture", "tier": 2 }
+  ],
+  "keywords": [
+    "program manager",
+    "director",
+    "delivery manager",
+    "agile",
+    "technical program manager"
+  ]
+}</div>
+    <p><strong>Tier 1</strong> companies get a higher score boost than <strong>Tier 2</strong>. Add as many or as few as you like. The <code>keywords</code> list controls which job titles count as a match — add all the title variations you'd consider.</p>
+
+    <h3>5b. Edit <code>config/referrals.json</code></h3>
+    <p>Any confirmed referral paths you have. The agent adds +2 points to jobs at these companies and surfaces the note in Slack alerts. Start with an empty object if you have none yet:</p>
+    <div class="path-example">{
+  "Acme Corp": {
+    "type": "direct",
+    "referrer": "Jane Smith",
+    "note": "Referral — contact Jane directly for any open roles"
+  }
+}</div>
+
+    <h3>5c. Edit <code>config/digest.json</code></h3>
+    <p>Controls optional daily reminders in your morning digest. Disable either section by setting <code>"enabled": false</code>, or customize the topics:</p>
+    <div class="path-example">{
+  "linkedin": {
+    "enabled": true,
+    "postDays": ["Tuesday", "Thursday"],
+    "topics": [
+      "What I've learned in my job search so far",
+      "How I approach program management at scale"
+    ]
+  },
+  "certs": {
+    "enabled": false,
+    "active": "PMP",
+    "studyTopics": ["Scope management", "Risk planning"]
+  }
+}</div>
+
+    <h3>5d. Edit <code>lib/career-facts.js</code></h3>
+    <p>This is the AI's source of truth for resume tailoring. Every fact here should be <strong>real and verifiable</strong> — the AI uses it to enrich resume bullets without fabricating. Open the file and replace the template content with your actual career history, following the same format.</p>
+    <p>The more specific and outcome-oriented your facts are, the better your tailored resumes will be. Focus on:</p>
+    <ul>
+      <li>Scale metrics (team size, budget, number of systems or products)</li>
+      <li>Outcomes (what shipped, what improved, what percentage)</li>
+      <li>Technologies and tools used</li>
+      <li>Cross-cutting facts that apply across multiple roles</li>
+    </ul>
+
+    <div class="callout tip">
+      <span class="callout-icon">&#128161;</span>
+      <div>The career facts file doesn't need to be perfect on day one. You can refine it over time as you remember things or as the AI tailoring improves. Start with your two or three most recent roles and fill in older ones later.</div>
+    </div>
+
+    <h3>5e. (Optional) Add your LinkedIn contacts for connection scoring</h3>
+    <p>The agent can count how many LinkedIn connections you have at each company and add that to the job score. To enable this:</p>
+    <ol>
+      <li>Go to <a href="https://www.linkedin.com/mypreferences/d/download-my-data" target="_blank">LinkedIn's data export page</a></li>
+      <li>Request a data export and wait for the email (usually a few minutes to a few hours)</li>
+      <li>Download the export ZIP and find the <code>Connections.csv</code> file inside</li>
+      <li>Save it anywhere on your computer, then run the build script (replace the path with where you saved the file):</li>
+    </ol>
+    <div class="cmd"><span>node scripts/build-contacts.js path/to/Connections.csv</span><button class="copy-btn" onclick="copyCmd(this, 'node scripts/build-contacts.js path/to/Connections.csv')">Copy</button></div>
+    <p>This creates <code>config/contacts.json</code> with your connections. Commit it to your repo (it only contains company names and LinkedIn company IDs — no personal contact details).</p>
+  </section>
+
+  <!-- STEP 6 -->
+  <section id="step6">
+    <h2><span class="step-num">6</span> Deploy to Vercel</h2>
+
+    <h3>6a. Import your repo into Vercel</h3>
+    <ol>
+      <li>Go to <a href="https://vercel.com/new" target="_blank">vercel.com/new</a></li>
+      <li>Click <strong>Import</strong> next to your forked repo</li>
+      <li>Leave all the settings as defaults and click <strong>Deploy</strong></li>
+      <li>The first deploy will probably fail — that's expected. The environment variables aren't set yet. We'll fix that next.</li>
+    </ol>
+
+    <h3>6b. Generate a CRON_SECRET</h3>
+    <p>This is a random string that protects your cron endpoints from unauthorized access. Generate one now:</p>
+    <div class="cmd"><span>node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"</span><button class="copy-btn" onclick="copyCmd(this, 'node -e \"console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))\"')">Copy</button></div>
+    <p>Copy the output — this is your <code>CRON_SECRET</code>.</p>
+
+    <h3>6c. Add environment variables in Vercel</h3>
+    <ol>
+      <li>In Vercel, open your project and go to <strong>Settings &rarr; Environment Variables</strong></li>
+      <li>Add each variable below. Set the environment to <strong>Production, Preview, and Development</strong> for all of them.</li>
+    </ol>
+
+    <table class="env-table">
+      <thead>
+        <tr>
+          <th>Variable</th>
+          <th>Where to find it</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>ANTHROPIC_API_KEY</td>
+          <td>console.anthropic.com &rarr; API Keys</td>
+        </tr>
+        <tr>
+          <td>GOOGLE_CLIENT_ID</td>
+          <td><code>credentials/oauth-client.json</code> &rarr; <code>installed.client_id</code></td>
+        </tr>
+        <tr>
+          <td>GOOGLE_CLIENT_SECRET</td>
+          <td><code>credentials/oauth-client.json</code> &rarr; <code>installed.client_secret</code></td>
+        </tr>
+        <tr>
+          <td>GOOGLE_REFRESH_TOKEN</td>
+          <td>Printed by <code>node scripts/auth.js</code> in Step 2d</td>
+        </tr>
+        <tr>
+          <td>GOOGLE_SHEET_ID</td>
+          <td>Printed by <code>node scripts/init-sheet.js</code> in Step 4a</td>
+        </tr>
+        <tr>
+          <td>SLACK_WEBHOOK_URL</td>
+          <td>Slack app &rarr; Incoming Webhooks (Step 3c)</td>
+        </tr>
+        <tr>
+          <td>SLACK_BOT_TOKEN</td>
+          <td>Slack app &rarr; OAuth &amp; Permissions &rarr; Bot Token (Step 3e)</td>
+        </tr>
+        <tr>
+          <td>SLACK_SIGNING_SECRET</td>
+          <td>Slack app &rarr; Basic Information &rarr; Signing Secret (Step 3f)</td>
+        </tr>
+        <tr>
+          <td>CRON_SECRET</td>
+          <td>Generated in Step 6b above</td>
+        </tr>
+        <tr>
+          <td>RESUME_FULL_NAME</td>
+          <td>Your full name as it should appear in tailored resume filenames (e.g. <code>Jane Smith</code>)</td>
+        </tr>
+        <tr>
+          <td>GOOGLE_DRIVE_BASE_RESUME_ID</td>
+          <td>Google Doc ID of your base resume (from the Doc URL — see Step 8d)</td>
+        </tr>
+        <tr>
+          <td>GOOGLE_DRIVE_TAILORED_FOLDER_ID</td>
+          <td>Google Drive folder ID where tailored resumes are saved (see Step 8b)</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:0.88rem; color: var(--muted); margin-top: 0.5rem;">The last three variables are only needed for resume tailoring (Step 8). You can skip them initially and add them later.</p>
+
+    <h3>6d. Redeploy</h3>
+    <p>After adding all environment variables, trigger a new deployment:</p>
+    <ol>
+      <li>Go to your project's <strong>Deployments</strong> tab</li>
+      <li>Click the three-dot menu on the most recent deployment and click <strong>Redeploy</strong></li>
+      <li>Wait for it to go green</li>
+    </ol>
+
+    <div class="callout success">
+      <span class="callout-icon">&#10003;</span>
+      <div>Once deployed, the agent is live. Crons run automatically at 7:00am (job scan) and 7:30am (digest) in your local time. See the <a href="#daily">Daily Workflow</a> section for your ongoing routine.</div>
+    </div>
+  </section>
+
+  <!-- STEP 7 -->
+  <section id="step7">
+    <h2><span class="step-num">7</span> Run your first job scan</h2>
+    <p>Don't wait for tomorrow morning — trigger a manual scan now to confirm everything is wired up correctly. Replace <code>YOUR_CRON_SECRET</code> with the value you set in Vercel.</p>
+
+    <h3>7a. Run the job discovery scan</h3>
+    <div class="cmd"><span>curl -s "https://your-project.vercel.app/api/discover" -H "Authorization: Bearer YOUR_CRON_SECRET"</span><button class="copy-btn" onclick="copyCmd(this, 'curl -s \"https://your-project.vercel.app/api/discover\" -H \"Authorization: Bearer YOUR_CRON_SECRET\"')">Copy</button></div>
+
+    <div class="expected-output">
+      <span class="label">&#10003; Success response:</span>
+      {"found":12,"actNow":3}
+    </div>
+
+    <h3>7b. Run the morning digest</h3>
+    <p>Wait one minute after discover completes, then run:</p>
+    <div class="cmd"><span>curl -s "https://your-project.vercel.app/api/digest" -H "Authorization: Bearer YOUR_CRON_SECRET"</span><button class="copy-btn" onclick="copyCmd(this, 'curl -s \"https://your-project.vercel.app/api/digest\" -H \"Authorization: Bearer YOUR_CRON_SECRET\"')">Copy</button></div>
+
+    <p>Check your Slack channel — you should see job alerts and/or a morning digest appear. Then open your Google Sheet (find it at <a href="https://sheets.google.com" target="_blank">sheets.google.com</a>) to see the full list of jobs that were found.</p>
+
+    <div class="callout warning">
+      <span class="callout-icon">&#9888;</span>
+      <div>If discover returns <code>{"found":0}</code> on your first run, that's normal — it may mean no LinkedIn alert emails have arrived yet. Wait until you receive a LinkedIn job alert email, then run discover again.</div>
+    </div>
+  </section>
+
+  <!-- STEP 8 -->
+  <section id="step8">
+    <h2><span class="step-num">8</span> Resume tailoring (advanced)</h2>
+    <p>The resume tailoring feature generates a customized Google Doc for each job you want to apply to. It requires a base resume already in Google Drive and one additional environment variable.</p>
+
+    <h3>8a. Upload your base resume to Google Drive</h3>
+    <ol>
+      <li>Go to <a href="https://drive.google.com" target="_blank">drive.google.com</a></li>
+      <li>Create a folder called <code>Job Search</code>, then a subfolder called <code>Base Resumes</code></li>
+      <li>Upload your resume as a Google Doc (File &rarr; Upload &rarr; then open it and save as Google Doc format, or paste it into a new Google Doc)</li>
+      <li>Also create a subfolder called <code>Tailored Resumes</code> — this is where the AI will save each generated version</li>
+    </ol>
+
+    <h3>8b. Get the Tailored Resumes folder ID</h3>
+    <ol>
+      <li>Open the <code>Tailored Resumes</code> folder in Google Drive</li>
+      <li>Look at the URL — it will look like: <code>https://drive.google.com/drive/folders/1WrmUjyHY1IleflNwEkTitK9vxlqA3iAB</code></li>
+      <li>The long string at the end is the folder ID</li>
+    </ol>
+
+    <h3>8c. Update the folder ID in the code</h3>
+    <p>Open <code>lib/resume.js</code> and replace the <code>TAILORED_FOLDER_ID</code> value at the top with your folder ID:</p>
+    <div class="path-example">const TAILORED_FOLDER_ID = 'your-folder-id-here';</div>
+    <p>Commit and push this change — Vercel will redeploy automatically.</p>
+
+    <h3>8d. Get your base resume document ID</h3>
+    <ol>
+      <li>Open your base resume Google Doc</li>
+      <li>The URL looks like: <code>https://docs.google.com/document/d/1NM7QCE79pyZAVSGk8ip.../edit</code></li>
+      <li>The long string between <code>/d/</code> and <code>/edit</code> is the document ID</li>
+    </ol>
+    <p>You'll paste this document ID into Slack when using the <code>/add</code> command to generate a tailored resume for a specific job.</p>
+
+    <h3>8e. Set up the Slack /add slash command</h3>
+    <p>The <code>/add</code> command in Slack lets you paste a job URL and trigger the full tailoring pipeline. To enable it:</p>
+    <ol>
+      <li>In your Slack app settings at api.slack.com, go to <strong>Slash Commands &rarr; Create New Command</strong></li>
+      <li>Command: <code>/add</code></li>
+      <li>Request URL: <code>https://your-project.vercel.app/api/slack/add</code></li>
+      <li>Short description: <code>Add a job and generate a tailored resume</code></li>
+      <li>Click <strong>Save</strong>, then reinstall the app to your workspace</li>
+    </ol>
+
+    <div class="callout tip">
+      <span class="callout-icon">&#128161;</span>
+      <div>You can skip the resume tailoring setup initially and come back to it once the daily job scanning is working well. The discovery, scoring, and digest features all work independently of resume tailoring.</div>
+    </div>
+  </section>
+
+  <!-- DAILY WORKFLOW -->
+  <section id="daily">
+    <h2><span class="step-num">&#9733;</span> Daily workflow</h2>
+    <p>Once deployed, very little ongoing maintenance is needed. Here's what the typical day looks like.</p>
+
+    <h3>What runs automatically (no action needed)</h3>
+    <ul>
+      <li><strong>7:00am:</strong> Job discovery scan — reads LinkedIn emails, scores and deduplicates jobs, posts Act Now alerts to Slack</li>
+      <li><strong>7:30am:</strong> Morning digest — AI briefing, pipeline counts, new roles list, resume queue, follow-ups due</li>
+    </ul>
+
+    <h3>What you do manually</h3>
+    <ul>
+      <li><strong>Review Act Now alerts</strong> in Slack — click View Job links, use the Add Link button to generate a tailored resume</li>
+      <li><strong>Update job statuses</strong> in your Google Sheet as you apply, hear back, or pass on roles</li>
+      <li><strong>Add referrals</strong> to <code>config/referrals.json</code> as you have networking conversations</li>
+      <li><strong>Tune scoring</strong> in <code>config/companies.json</code> as your target list evolves</li>
+    </ul>
+
+    <h3>Triggering a manual scan</h3>
+    <p>If you want to run outside the cron schedule (e.g. after setting up a new LinkedIn alert):</p>
+    <div class="cmd"><span>curl -s "https://your-project.vercel.app/api/discover" -H "Authorization: Bearer YOUR_CRON_SECRET"</span><button class="copy-btn" onclick="copyCmd(this, 'curl -s \"https://your-project.vercel.app/api/discover\" -H \"Authorization: Bearer YOUR_CRON_SECRET\"')">Copy</button></div>
+
+    <h3>Adjusting cron timing</h3>
+    <p>The cron schedule is in <code>vercel.json</code>. Times are in UTC. To convert: add 5 hours for CDT (summer) or 6 hours for CST (winter).</p>
+    <div class="path-example">{
+  "crons": [
+    { "path": "/api/discover", "schedule": "0 12 * * *" },
+    { "path": "/api/digest",   "schedule": "30 12 * * *" }
+  ]
+}</div>
+    <p>The values above run discover at 7:00am CDT and digest at 7:30am CDT. Adjust the hour values to match your preferred time zone and wake-up time.</p>
+  </section>
+
+  <!-- TROUBLESHOOTING -->
+  <section id="troubleshooting">
+    <h2><span class="step-num">!</span> Troubleshooting</h2>
+
+    <h3>Discover returns <code>{"found":0}</code> every day</h3>
+    <ul>
+      <li>Confirm LinkedIn alert emails are arriving in the Gmail inbox you authorized (not a different address)</li>
+      <li>Check that the emails aren't going to spam or being filtered by a Gmail rule</li>
+      <li>Verify the Gmail API is enabled in your Google Cloud project</li>
+      <li>Try revoking and re-running <code>node scripts/auth.js</code> to get a fresh token</li>
+    </ul>
+
+    <h3>Auth error / <code>invalid_grant</code> from Google</h3>
+    <p>Your refresh token has expired or been revoked. Fix it by re-running the auth script:</p>
+    <ol>
+      <li>Go to <a href="https://myaccount.google.com/permissions" target="_blank">myaccount.google.com/permissions</a></li>
+      <li>Find your app and click <strong>Remove Access</strong></li>
+      <li>Run <code>node scripts/auth.js</code> again — a new refresh token will be printed</li>
+      <li>Update <code>GOOGLE_REFRESH_TOKEN</code> in your Vercel environment variables and redeploy</li>
+    </ol>
+
+    <h3>Digest posts to Slack but shows no new roles</h3>
+    <p>This is normal if discover ran earlier in the day and there are no jobs from the past 24 hours. The "New Roles" section only shows jobs found since yesterday's scan.</p>
+
+    <h3>Slack 400 error on digest</h3>
+    <p>The most common cause is a job section exceeding Slack's 3,000 character limit for block text — this can happen when many high-priority jobs each have long URLs. The template repo's Act Now list is capped at 5 jobs and URLs are stripped of tracking parameters to prevent this.</p>
+
+    <h3>Resume tailoring fails or produces no output</h3>
+    <ul>
+      <li>Check that <code>TAILORED_FOLDER_ID</code> in <code>lib/resume.js</code> matches an actual folder you own in Google Drive</li>
+      <li>Make sure your OAuth account has write access to that Drive folder</li>
+      <li>Check Vercel's function logs for the specific error: <strong>Project &rarr; Deployments &rarr; click latest deployment &rarr; Functions tab</strong></li>
+    </ul>
+
+    <h3>Crons aren't running automatically</h3>
+    <p>Vercel's Hobby (free) plan does support cron jobs, but they may not run reliably under heavy platform load. If you need guaranteed daily execution, consider:</p>
+    <ul>
+      <li>Setting a daily phone alarm and running the curl commands manually</li>
+      <li>Upgrading to Vercel Pro ($20/month) for guaranteed cron execution</li>
+      <li>Using a free service like <a href="https://cron-job.org" target="_blank">cron-job.org</a> to hit your endpoint on a schedule</li>
+    </ul>
+
+    <h3>I need to update my Vercel environment variables</h3>
+    <ol>
+      <li>Go to your Vercel project &rarr; <strong>Settings &rarr; Environment Variables</strong></li>
+      <li>Click the variable you want to change, update the value, and save</li>
+      <li>Redeploy for the change to take effect: <strong>Deployments &rarr; Redeploy</strong></li>
+    </ol>
+
+    <div class="callout success">
+      <span class="callout-icon">&#128172;</span>
+      <div>If you run into something not covered here, check the Vercel function logs first — they usually show the exact error. Go to your project &rarr; Deployments &rarr; click the latest deployment &rarr; Functions tab &rarr; search for the failing endpoint.</div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>Built with <a href="https://claude.ai" target="_blank">Claude</a> and deployed on <a href="https://vercel.com" target="_blank">Vercel</a>.</p>
+  <p style="margin-top:0.4rem">Guide reflects template v1.0. For updates, see the repo README.</p>
+</footer>
+
+<script>
+  function copyCmd(btn, text) {
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 1800);
+    });
+  }
+</script>
+
+</body>
+</html>
