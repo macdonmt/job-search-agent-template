@@ -35,9 +35,7 @@ Then just tell Claude: **"I want to set up the job search agent."** It takes it 
 
 ### Manual setup
 
-If you prefer to set things up yourself, follow the step-by-step HTML guide:
-
-> **[Full Setup Guide →](https://yourusername.github.io/job-search-agent)**
+If you prefer to set things up yourself, follow the step-by-step HTML guide by downloading the job-search-agent.html and running locally.
 
 The guide covers every step in detail: Google Cloud API setup, Slack app creation, Vercel deployment, and configuration.
 
